@@ -11,14 +11,12 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
         node-version: [14.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-
+        
     steps:
     - uses: actions/checkout@v3
     - name: Use Node.js ${{ matrix.node-version }}
@@ -32,3 +30,34 @@ jobs:
       run: npm run test:unit
     - name: Displaying SoftUni username
       run: echo "PavlinPenev"
+      
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    
+    steps:
+    - uses: actions/checkout@v3
+    - name: Deploy to Render.com
+      uses: bankfliptech/deploy-to-render@v1.0.2
+      with:
+        api-key: ${{ secrets.API_KEY }}
+        service-id: ${{ secrets.SERVICE_ID }}
+
+  ui-tests:
+    runs-on: ubuntu-latest
+    needs: deploy
+
+    strategy:
+      matrix:
+        node-version: [14.x]
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Installing dependencies
+      run: npm install
+    - name: Install Playwright
+      run: npx playwright install --with-deps
+    - name: Running tests
+      run: npm run test:unit
+    - name: Running UI Tests
+      run: npm run test:ui
