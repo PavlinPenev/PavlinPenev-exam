@@ -40,8 +40,9 @@ jobs:
     - name: Deploy to Render.com
       uses: bankfliptech/deploy-to-render@v1.0.2
       with:
-        api-key: ${{ secrets.API_KEY }}
-        service-id: ${{ secrets.SERVICE_ID }}
+        deployHookURL: ${{ secrets.DEPLOY_HOOK }}
+        apiKey: ${{ secrets.API_KEY }}
+        serviceId: ${{ secrets.SERVICE_ID }}
 
   ui-tests:
     runs-on: ubuntu-latest
